@@ -3,3 +3,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Bas-stil för headern */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+
+/* När headern har skrollat */
+header.scrolled {
+  background: rgba(0, 0, 0, 0.5); /* Semitransparent bakgrund */
+  backdrop-filter: blur(10px); /* Suddig bakgrund */
+}
+
+/* Använd en gradientbakgrund när headern inte är skrollad */
+header {
+  background: linear-gradient(
+    to right,
+    #6a1b9a,
+    #1e3a8a
+  ); /* Exempel på gradient */
+}
