@@ -1,13 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}", // Se till att detta inkluderar alla dina komponenter och sidor
+  ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ["Roboto", "sans-serif"],
-      },
-    },
+    extend: {},
   },
-
   plugins: [],
 };
