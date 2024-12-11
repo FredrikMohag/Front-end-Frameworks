@@ -14,7 +14,7 @@ function App() {
         {/* Layout som wrapper */}
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="product/:id" element={<ProductPage />} />
+          <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="checkout-success" element={<CheckoutSuccessPage />} />
           <Route path="contact" element={<ContactPage />} />
@@ -23,5 +23,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;
