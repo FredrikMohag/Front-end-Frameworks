@@ -62,7 +62,7 @@ export default function CheckOutPage() {
 
               {/* Pris */}
               <div className="w-32 text-lg text-gray-700">
-                ${parseFloat(item.price).toFixed(2)}
+                SEK {parseFloat(item.price).toFixed(2)}
               </div>
 
               {/* Quantity and Controls */}
@@ -86,7 +86,7 @@ export default function CheckOutPage() {
 
               {/* Subtotal */}
               <div className="w-32 text-lg font-medium text-gray-700">
-                ${parseFloat(item.price * item.quantity).toFixed(2)}
+                SEK {parseFloat(item.price * item.quantity).toFixed(2)}
               </div>
             </div>
           ))}
@@ -97,7 +97,7 @@ export default function CheckOutPage() {
         {/* Total */}
         <div className="flex text-xl font-semibold text-gray-800">
           <span className="mr-4">Total:</span>
-          <span className="text-2xl text-green-600">${total}</span>
+          <span className="text-2xl text-green-600">SEK{total}</span>
         </div>
 
         <div className="flex space-x-4">
@@ -112,7 +112,7 @@ export default function CheckOutPage() {
           )}
 
           {/* Checkout Button */}
-          <Link to={`/checkoutSuccess`}>
+          <Link to="/checkout-success">
             <button className="rounded-md bg-indigo-600 px-6 py-2 text-white shadow-md hover:bg-indigo-700 focus:outline-none">
               Checkout
             </button>
