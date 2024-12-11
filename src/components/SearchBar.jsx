@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { apiUrl } from "../api/apiUrl";
 import debounce from "lodash.debounce";
@@ -7,12 +7,15 @@ const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const searchRef = useRef(null); // Referens för att hantera om användaren klickar utanför
 
+  // Hantera ändring av sökterm
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
     console.log("Search term changed:", e.target.value); // Loggar söktermen
   };
 
+  // Hämta produkter vid render
   useEffect(() => {
     const fetchProducts = async () => {
       console.log("Fetching products..."); // Loggar när produkterna hämtas
@@ -33,6 +36,7 @@ const SearchBar = () => {
     fetchProducts();
   }, []);
 
+  // Filtrera produkter när sökterm ändras
   useEffect(() => {
     const filterProducts = debounce(() => {
       console.log("Filtering products..."); // Loggar när filtrering pågår
@@ -57,13 +61,29 @@ const SearchBar = () => {
     };
   }, [searchTerm, products]);
 
+  // Stäng sökfältet om användaren klickar utanför
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchTerm(""); // Töm sökterm när användaren klickar utanför
+        setFilteredProducts([]); // Töm filtrerade produkter
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleProductClick = () => {
     console.log("Product clicked, clearing search term");
     setSearchTerm("");
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-xl">
+    <div className="relative mx-auto w-full max-w-xl" ref={searchRef}>
       {/* Inputfält */}
       <form onSubmit={(e) => e.preventDefault()} className="relative">
         <input
