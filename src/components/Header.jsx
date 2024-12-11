@@ -1,58 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import { AiOutlineShoppingCart } from "react-icons/ai"; // React Icon för Cart
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { FiShoppingBag } from "react-icons/fi"; // Ny shopping ikon
+import { useStore } from "../store/cart"; // Importera cart store
 
 const Header = () => {
-  // State för att hålla koll på om användaren har skrollat ner
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State för att hantera menyn
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Logga initialt tillstånd
-  console.log("Initial isScrolled state:", isScrolled);
+  // Hämta cart state och antal objekt
+  const cart = useStore((state) => state.cart);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); // Beräkna totalantalet produkter
 
-  // Effect för att lyssna på skroll-händelser
   useEffect(() => {
     const handleScroll = () => {
-      // Om skrollpositionen är större än 50px, sätt isScrolled till true
       if (window.scrollY > 50) {
-        if (!isScrolled) {
-          console.log("User has scrolled down. Updating isScrolled to true.");
-          setIsScrolled(true);
-        }
+        setIsScrolled(true);
       } else {
-        if (isScrolled) {
-          console.log("User has scrolled up. Updating isScrolled to false.");
-          setIsScrolled(false);
-        }
+        setIsScrolled(false);
       }
     };
 
-    // Lägg till skroll-lyssnaren när komponenten laddas
     window.addEventListener("scroll", handleScroll);
-
-    // Rensa skroll-lyssnaren när komponenten avmonteras
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isScrolled]);
+  }, []);
 
   return (
-    <header
-      className={`header ${isScrolled ? "scrolled" : ""}`} // Lägg till 'scrolled' klass när användaren skrollat
-    >
+    <header className={`header ${isScrolled ? "scrolled" : ""}`}>
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link
           to="/"
-          className="text-2xl font-bold uppercase tracking-widest transition-transform duration-300 hover:scale-105"
+          className="flex items-center space-x-2 text-3xl font-extrabold tracking-wider text-indigo-600"
         >
-          My Store
+          <FiShoppingBag className="h-8 w-8 text-indigo-600" />{" "}
+          {/* Shopping ikon */}
+          <span className="font-serif uppercase">Shop4Life</span>{" "}
+          {/* Namnet "Shop4Life" */}
         </Link>
 
-        {/* Centered Search Bar */}
+        {/* Search Bar */}
         <div className="mx-8 hidden flex-1 md:block">
-          <SearchBar
-            onSearch={(searchTerm) => console.log("Sökterm:", searchTerm)}
-          />
+          <SearchBar />
         </div>
 
         {/* Navbar */}
@@ -71,18 +61,22 @@ const Header = () => {
           </Link>
           <Link
             to="/checkout"
-            className="flex items-center transition-colors duration-300 hover:text-indigo-300"
+            className="relative flex items-center transition-colors duration-300 hover:text-indigo-300"
           >
             <AiOutlineShoppingCart className="h-6 w-6" />
+            {totalItems > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                {totalItems}
+              </span>
+            )}
           </Link>
         </nav>
 
-        {/* Hamburger Menu for Small Screens */}
+        {/* Mobile Menu Toggle */}
         <button
           className="text-2xl md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          {/* Visa ☰ om menyn är stängd, visa × om menyn är öppen */}
           {isMenuOpen ? "×" : "☰"}
         </button>
 
@@ -90,7 +84,7 @@ const Header = () => {
         <div
           className={`absolute left-0 top-0 h-full w-full bg-gray-800 bg-opacity-75 md:hidden ${
             isMenuOpen ? "block" : "hidden"
-          } backdrop-blur-md md:backdrop-blur-none`} // Här justeras backdrop-blur effekten på mindre skärmar
+          }`}
           onClick={() => setIsMenuOpen(false)}
         >
           <div className="flex justify-end p-6">
@@ -98,30 +92,35 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
               className="text-3xl text-white"
             >
-              &times;
+              ×
             </button>
           </div>
           <div className="mt-12 flex flex-col items-center space-y-4">
             <Link
               to="/"
-              className="text-lg font-medium text-white transition-colors duration-300"
+              className="text-lg font-medium text-white"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               to="/contact"
-              className="text-lg font-medium text-white transition-colors duration-300"
+              className="text-lg font-medium text-white"
               onClick={() => setIsMenuOpen(false)}
             >
               Contact
             </Link>
             <Link
               to="/checkout"
-              className="flex items-center text-lg font-medium text-white transition-colors duration-300"
+              className="flex items-center text-lg font-medium text-white"
               onClick={() => setIsMenuOpen(false)}
             >
               <AiOutlineShoppingCart className="h-6 w-6" />
+              {totalItems > 0 && (
+                <span className="ml-2 rounded-full bg-red-500 px-2 py-1 text-xs text-white">
+                  {totalItems}
+                </span>
+              )}
             </Link>
           </div>
         </div>
