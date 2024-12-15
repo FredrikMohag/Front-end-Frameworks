@@ -22,7 +22,7 @@ const CheckoutSuccessPage = () => {
         </p>
         <div className="mt-8 flex items-center justify-center space-x-4">
           <a
-            href="/shop"
+            href="/HomePage"
             className="transform rounded-md bg-white px-6 py-2 font-semibold text-blue-500 shadow-lg transition-transform hover:scale-110 hover:bg-gray-200"
           >
             Continue Shopping
