@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { apiUrl } from "../../src/api/apiUrl";
 import { useStore } from "../store/cart"; // Importera useStore
-import { AiFillStar } from "react-icons/ai"; // React Icons för stjärnbetyg
+import { AiFillStar, AiOutlineStar } from "react-icons/ai"; // React Icons för stjärnbetyg (importera tomma stjärnor)
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -91,13 +91,22 @@ const ProductPage = () => {
         <div className="flex flex-col">
           <h1 className="mb-4 text-3xl font-bold">{product.title}</h1>
           <div className="mb-4 flex items-center">
-            {[...Array(Math.round(averageRating))].map((_, i) => (
-              <AiFillStar
-                key={i}
-                className="h-5 w-5 text-yellow-500"
-                aria-hidden="true"
-              />
-            ))}
+            {/* Render 5 stars, filled or empty */}
+            {[...Array(5)].map((_, i) => {
+              return i < averageRating ? (
+                <AiFillStar
+                  key={i}
+                  className="h-5 w-5 text-yellow-500"
+                  aria-hidden="true"
+                />
+              ) : (
+                <AiOutlineStar
+                  key={i}
+                  className="h-5 w-5 text-yellow-500"
+                  aria-hidden="true"
+                />
+              );
+            })}
             <p className="ml-2 text-gray-600">{averageRating} / 5</p>
           </div>
           <p className="mb-4 text-gray-700">{product.description}</p>
@@ -135,13 +144,22 @@ const ProductPage = () => {
               >
                 <p className="text-lg font-semibold">{review.username}</p>
                 <div className="mb-2 flex items-center">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <AiFillStar
-                      key={i}
-                      className="h-5 w-5 text-yellow-500"
-                      aria-hidden="true"
-                    />
-                  ))}
+                  {/* Render the review's rating stars */}
+                  {[...Array(5)].map((_, i) => {
+                    return i < review.rating ? (
+                      <AiFillStar
+                        key={i}
+                        className="h-5 w-5 text-yellow-500"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <AiOutlineStar
+                        key={i}
+                        className="h-5 w-5 text-yellow-500"
+                        aria-hidden="true"
+                      />
+                    );
+                  })}
                 </div>
                 <p className="text-gray-600">{review.description}</p>
               </div>

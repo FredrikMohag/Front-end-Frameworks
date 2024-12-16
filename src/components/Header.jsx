@@ -60,6 +60,12 @@ const Header = () => {
             Contact
           </Link>
           <Link
+            to="/sale"
+            className="text-lg font-medium text-red-600 transition-colors duration-300 hover:text-red-400"
+          >
+            Sale
+          </Link>
+          <Link
             to="/checkout"
             className="relative flex items-center transition-colors duration-300 hover:text-indigo-300"
           >
@@ -109,6 +115,13 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Contact
+            </Link>
+            <Link
+              to="/sale"
+              className="text-lg font-medium text-white"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Sale
             </Link>
             <Link
               to="/checkout"
