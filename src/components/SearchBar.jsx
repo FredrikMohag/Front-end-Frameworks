@@ -7,11 +7,13 @@ const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isTyping, setIsTyping] = useState(false); // Flagga för att spåra när användaren skriver
   const searchRef = useRef(null); // Referens för att hantera om användaren klickar utanför
 
   // Hantera ändring av sökterm
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
+    setIsTyping(true); // Sätt flaggan till true när användaren skriver
     console.log("Search term changed:", e.target.value); // Loggar söktermen
   };
 
@@ -114,7 +116,7 @@ const SearchBar = () => {
         </button>
 
         {/* Dynamiskt meddelande */}
-        {filteredProducts.length === 0 && searchTerm && (
+        {isTyping && filteredProducts.length === 0 && searchTerm && (
           <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-gray-500">
             No products found
           </span>
