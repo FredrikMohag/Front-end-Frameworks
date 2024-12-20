@@ -1,14 +1,23 @@
 import React, { useState } from "react";
+import { z } from "zod";
 
 const ContactPage = () => {
   const [form, setForm] = useState({
     fullName: "",
     subject: "",
     email: "",
-    body: "",
+    message: "",
   });
 
   const [errors, setErrors] = useState({});
+
+  // Zod schema för validering
+  const schema = z.object({
+    fullName: z.string().min(3, "Full name must be at least 3 characters."),
+    subject: z.string().min(3, "Subject must be at least 3 characters."),
+    email: z.string().email("Please enter a valid email address."),
+    message: z.string().min(3, "Message must be at least 3 characters."),
+  });
 
   // Funktion för att hantera ändringar i input-fälten
   const handleChange = (e) => {
@@ -19,41 +28,32 @@ const ContactPage = () => {
 
   // Funktion för att validera formuläret
   const validateForm = () => {
-    const newErrors = {};
-
-    if (form.fullName.trim().length < 3) {
-      newErrors.fullName = "Full name must be at least 3 characters.";
+    try {
+      schema.parse(form); // Validera formdata mot schemat
+      setErrors({}); // Rensa fel om validering lyckas
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const validationErrors = {};
+        error.errors.forEach((err) => {
+          validationErrors[err.path[0]] = err.message;
+        });
+        setErrors(validationErrors); // Uppdatera fel
+        console.log("Validation errors:", validationErrors); // Logga valideringsfel
+      }
+      return false;
     }
-
-    if (form.subject.trim().length < 3) {
-      newErrors.subject = "Subject must be at least 3 characters.";
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-
-    if (form.body.trim().length < 3) {
-      newErrors.body = "Body must be at least 3 characters.";
-    }
-
-    console.log("Validation errors:", newErrors); // Logga valideringsfel
-    return newErrors;
   };
 
   // Funktion för att hantera formulärinlämning
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      console.log("Form submission prevented due to errors:", validationErrors); // Logga om formuläret inte skickas
-    } else {
-      setErrors({});
+    if (validateForm()) {
       alert("Form submitted successfully!");
       console.log("Form data:", form); // Logga formdata när formuläret skickas
-      setForm({ fullName: "", subject: "", email: "", body: "" });
+      setForm({ fullName: "", subject: "", email: "", message: "" });
+    } else {
+      console.log("Form submission prevented due to errors.");
     }
   };
 
@@ -147,29 +147,29 @@ const ContactPage = () => {
           </div>
         </div>
 
-        {/* Body */}
+        {/* Message */}
         <div>
           <label
-            htmlFor="body"
+            htmlFor="message"
             className="block text-sm font-medium text-gray-700"
           >
-            Body
+            Message
           </label>
           <div className="relative mt-1">
             <textarea
-              id="body"
-              name="body"
-              value={form.body}
+              id="message"
+              name="message"
+              value={form.message}
               onChange={handleChange}
               className={`w-full border ${
-                errors.body ? "border-red-500" : "border-gray-300"
+                errors.message ? "border-red-500" : "border-gray-300"
               } rounded-lg px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
               placeholder="Enter your message"
               rows={5}
               required
             ></textarea>
-            {errors.body && (
-              <p className="mt-2 text-sm text-red-500">{errors.body}</p>
+            {errors.message && (
+              <p className="mt-2 text-sm text-red-500">{errors.message}</p>
             )}
           </div>
         </div>
