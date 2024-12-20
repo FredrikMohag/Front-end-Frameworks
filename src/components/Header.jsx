@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import SearchBar from "./SearchBar";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { FiShoppingBag } from "react-icons/fi"; // Ny shopping ikon
-import { useStore } from "../store/cart"; // Importera cart store
+import { FiShoppingBag } from "react-icons/fi";
+import { useStore } from "../store/cart";
+import MobileMenu from "./MobileMenu";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Hämta cart state och antal objekt
   const cart = useStore((state) => state.cart);
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); // Beräkna totalantalet produkter
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -30,14 +27,33 @@ const Header = () => {
     <header className={`header ${isScrolled ? "scrolled" : ""}`}>
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link
-          to="/"
-          className="flex items-center space-x-2 text-3xl font-extrabold tracking-wider text-indigo-600"
-        >
-          <FiShoppingBag className="h-8 w-8 text-indigo-600" />{" "}
-          {/* Shopping ikon */}
-          <span className="font-serif uppercase">Shop4Life</span>{" "}
-          {/* Namnet "Shop4Life" */}
+        <Link to="/" className="flex items-center space-x-2">
+          <motion.div
+            className="text-indigo-600"
+            initial={{ scale: 0.8, rotate: -15, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            transition={{ duration: 1.2 }} // Långsammare in-glidning
+            whileHover={{
+              scale: 1.1,
+              transition: { duration: 0.2 },
+            }}
+          >
+            <FiShoppingBag className="h-8 w-8" />
+          </motion.div>
+          <motion.span
+            className="font-serif text-3xl font-extrabold uppercase tracking-wider"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.2 }} // Långsammare animation
+            whileHover={{
+              color: "#4F46E5", // Färgändring vid hovring
+              scale: 1.1, // Lätt skalning vid hovring
+              transition: { duration: 0.3 },
+            }}
+            style={{ color: "#6366F1" }} // Ursprunglig färg
+          >
+            Shop4Life
+          </motion.span>
         </Link>
 
         {/* Search Bar */}
@@ -87,56 +103,11 @@ const Header = () => {
         </button>
 
         {/* Mobile Menu */}
-        <div
-          className={`absolute left-0 top-0 h-full w-full bg-gray-800 bg-opacity-75 md:hidden ${
-            isMenuOpen ? "block" : "hidden"
-          }`}
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <div className="flex justify-end p-6">
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className="text-3xl text-white"
-            >
-              ×
-            </button>
-          </div>
-          <div className="mt-12 flex flex-col items-center space-y-4">
-            <Link
-              to="/"
-              className="text-lg font-medium text-white"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/contact"
-              className="text-lg font-medium text-white"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
-            </Link>
-            <Link
-              to="/sale"
-              className="text-lg font-medium text-white"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sale
-            </Link>
-            <Link
-              to="/checkout"
-              className="flex items-center text-lg font-medium text-white"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <AiOutlineShoppingCart className="h-6 w-6" />
-              {totalItems > 0 && (
-                <span className="ml-2 rounded-full bg-red-500 px-2 py-1 text-xs text-white">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-          </div>
-        </div>
+        <MobileMenu
+          isMenuOpen={isMenuOpen}
+          setIsMenuOpen={setIsMenuOpen}
+          totalItems={totalItems}
+        />
       </div>
     </header>
   );
